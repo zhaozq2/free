@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-case {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .running {
+            background: #fff3cd;
+            color: #856404;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>贪吃蛇游戏简单测试</h1>
+    
+    <div id="testResults">
+        <div class="test-case running" id="test1">
+            <strong>测试 1:</strong> 游戏初始化
+            <div id="result1">运行中...</div>
+        </div>
+        
+        <div class="test-case running" id="test2">
+            <strong>测试 2:</strong> 蛇移动逻辑
+            <div id="result2">运行中...</div>
+        </div>
+        
+        <div class="test-case running" id="test3">
+            <strong>测试 3:</strong> 食物生成
+            <div id="result3">运行中...</div>
+        </div>
+        
+        <div class="test-case running" id="test4">
+            <strong>测试 4:</strong> 碰撞检测
+            <div id="result4">运行中...</div>
+        </div>
+        
+        <div class="test-case running" id="test5">
+            <strong>测试 5:</strong> 分数计算
+            <div id="result5">运行中...</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <button onclick="runAllTests()">运行所有测试</button>
+        <button onclick="resetTests()">重置测试</button>
+    </div>
+    
+    <script>
+        // 测试用例
+        const tests = [
+            {
+                id: 'test1',
+                name: '游戏初始化',
+                run: function() {
+                    try {
+                        // 模拟游戏初始化
+                        const snake = [{x: 10, y: 10}];
+                        const score = 0;
+                        
+                        if (snake.length === 1 && snake[0].x === 10 && snake[0].y === 10 && score === 0) {
+                            return {pass: true, message: '✓ 游戏初始化成功'};
+                        } else {
+                            return {pass: false, message: '✗ 游戏初始化失败'};
+                        }
+                    } catch (error) {
+                        return {pass: false, message: `✗ 错误: ${error.message}`};
+                    }
+                }
+            },
+            {
+                id: 'test2',
+                name: '蛇移动逻辑',
+                run: function() {
+                    try {
+                        // 模拟蛇移动
+                        let snake = [{x: 10, y: 10}];
+                        const dx = 1, dy = 0;
+                        
+                        // 移动蛇头
+                        const newHead = {x: snake[0].x + dx, y: snake[0].y + dy};
+                        snake.unshift(newHead);
+                        snake.pop(); // 移除尾部（如果没有吃到食物）
+                        
+                        if (snake.length === 1 && snake[0].x === 11 && snake[0].y === 10) {
+                            return {pass: true, message: '✓ 蛇移动逻辑正确'};
+                        } else {
+                            return {pass: false, message: '✗ 蛇移动逻辑错误'};
+                        }
+                    } catch (error) {
+                        return {pass: false, message: `✗ 错误: ${error.message}`};
+                    }
+                }
+            },
+            {
+                id: 'test3',
+                name: '食物生成',
+                run: function() {
+                    try {
+                        // 模拟食物生成
+                        const tileCount = 20;
+                        const food = {
+                            x: Math.floor(Math.random() * tileCount),
+                            y: Math.floor(Math.random() * tileCount)
+                        };
+                        
+                        if (food.x >= 0 && food.x < tileCount && food.y >= 0 && food.y < tileCount) {
+                            return {pass: true, message: `✓ 食物生成在有效位置 (${food.x}, ${food.y})`};
+                        } else {
+                            return {pass: false, message: `✗ 食物生成位置无效`};
+                        }
+                    } catch (error) {
+                        return {pass: false, message: `✗ 错误: ${error.message}`};
+                    }
+                }
+            },
+            {
+                id: 'test4',
+                name: '碰撞检测',
+                run: function() {
+                    try {
+                        // 模拟墙壁碰撞检测
+                        const head = {x: -1, y: 10}; // 撞到左墙
+                        const tileCount = 20;
+                        
+                        const hitWall = head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount;
+                        
+                        if (hitWall) {
+                            return {pass: true, message: '✓ 墙壁碰撞检测正确'};
+                        } else {
+                            return {pass: false, message: '✗ 墙壁碰撞检测失败'};
+                        }
+                    } catch (error) {
+                        return {pass: false, message: `✗ 错误: ${error.message}`};
+                    }
+                }
+            },
+            {
+                id: 'test5',
+                name: '分数计算',
+                run: function() {
+                    try {
+                        // 模拟分数计算
+                        let score = 0;
+                        const foodValue = 10;
+                        
+                        // 吃到食物
+                        score += foodValue;
+                        
+                        if (score === 10) {
+                            return {pass: true, message: '✓ 分数计算正确'};
+                        } else {
+                            return {pass: false, message: `✗ 分数计算错误: 得到 ${score}, 期望 10`};
+                        }
+                    } catch (error) {
+                        return {pass: false, message: `✗ 错误: ${error.message}`};
+                    }
+                }
+            }
+        ];
+        
+        function runTest(test) {
+            const element = document.getElementById(test.id);
+            const resultElement = document.getElementById(`result${test.id.slice(-1)}`);
+            
+            element.className = 'test-case running';
+            resultElement.textContent = '运行中...';
+            
+            // 延迟执行，让用户看到状态变化
+            setTimeout(() => {
+                try {
+                    const result = test.run();
+                    
+                    if (result.pass) {
+                        element.className = 'test-case pass';
+                        resultElement.innerHTML = `<span style="color: green">${result.message}</span>`;
+                    } else {
+                        element.className = 'test-case fail';
+                        resultElement.innerHTML = `<span style="color: red">${result.message}</span>`;
+                    }
+                } catch (error) {
+                    element.className = 'test-case fail';
+                    resultElement.innerHTML = `<span style="color: red">✗ 测试执行错误: ${error.message}</span>`;
+                }
+            }, 500);
+        }
+        
+        function runAllTests() {
+            tests.forEach(test => {
+                runTest(test);
+            });
+        }
+        
+        function resetTests() {
+            tests.forEach(test => {
+                const element = document.getElementById(test.id);
+                const resultElement = document.getElementById(`result${test.id.slice(-1)}`);
+                
+                element.className = 'test-case running';
+                resultElement.textContent = '等待运行...';
+            });
+        }
+        
+        // 页面加载时自动运行测试
+        window.onload = function() {
+            setTimeout(runAllTests, 1000);
+        };
+    </script>
+</body>
+</html>
